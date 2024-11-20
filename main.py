@@ -13,8 +13,11 @@ def main(audio_path, language='es'):
         print(f"\n Audio file not found: {audio_path}")
     print(f"\n Using audio file: {audio_path}:\n")
        
-    text = model.get_text(audio_path, language)
-    print(text)
+    text = model.get_text(audio_path, language,True)
+    for item in text["segments"]:
+        print(f'{item["text"]} \n from {item["start"]} to {item["end"]}')
+    #print(text)
+    #print(len(text["segments"]))
     return text
 
 def get_path():
@@ -33,7 +36,7 @@ def get_path():
     if done:
         return user_input
     return False
-#C:\Users\ArPaVa\Pictures\Screenshots\audio_2024-11-20_09-24-37.ogg
+#"C:\Users\ArPaVa\Pictures\Screenshots\audio_2024-11-20_09-24-37.ogg"
 #"C:/Users/ArPaVa/Documents/VS Code/Tesis/Code/FirstSteps/test.wav"
 
 path = get_path()

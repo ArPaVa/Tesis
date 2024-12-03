@@ -37,7 +37,7 @@ def get_path():
         return user_input
     return False
 #"C:\Users\ArPaVa\Pictures\Screenshots\audio_2024-11-20_09-24-37.ogg"
-#"C:/Users/ArPaVa/Documents/VS Code/Tesis/Code/FirstSteps/test.wav"
+#"C:/Users/ArPaVa/Documents/VS Code/Tesis/Code/Tesis/test.wav"
 
 path = get_path()
 if path != False:

@@ -3,6 +3,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__),"stt"))
 import whisper_s2t
 import warnings
+import json
 #from .stt import whisper_s2t
 
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -15,9 +16,18 @@ def main(audio_path, language='es'):
        
     text = model.get_text(audio_path, language,True)
     for item in text["segments"]:
-        print(f'{item["text"]} \n from {item["start"]} to {item["end"]}')
+        #print(f'{item["text"]} \n from {item["start"]} to {item["end"]}') #print with time stamps
+        print(f'{item["text"]}')
     #print(text)
     #print(len(text["segments"]))
+    print(audio_path)
+    base_name = os.path.basename(audio_path)
+    print(base_name)
+    file_name_without_extension = os.path.splitext(base_name)[0]
+    print(file_name_without_extension)  # Output: file
+    with open("C:/Users/ArPaVa/Documents/VS Code/Tesis/Files/"+file_name_without_extension+".json","w") as json_file:
+        json.dump(text,json_file)
+    
     return text
 
 def get_path():
@@ -35,6 +45,7 @@ def get_path():
         
     if done:
         return user_input
+        
     return False
 #"C:\Users\ArPaVa\Pictures\Screenshots\audio_2024-11-20_09-24-37.ogg"
 #"C:/Users/ArPaVa/Documents/VS Code/Tesis/Code/Tesis/test.wav"

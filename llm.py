@@ -39,7 +39,7 @@ class Mistral7BOpenOrca:
     
     def run(self, prompt: str, system_prompt="You are a helpful assistant.", 
             max_tokens: int = 1024, temperature: float = 0.7, 
-            top_p: float = 0.9, echo: bool = False) -> str:
+            top_p: float = 0.9) -> str:
         """
         Run inference on the model with the given prompt.
         
@@ -49,7 +49,6 @@ class Mistral7BOpenOrca:
             max_tokens: Maximum number of tokens to generate
             temperature: Sampling temperature (lower = more deterministic)
             top_p: Nucleus sampling probability threshold
-            echo: Whether to echo back the prompt in the output
             
         Returns:
             Dictionary containing the generated text and other information
@@ -64,8 +63,7 @@ class Mistral7BOpenOrca:
             messages=messages,
             max_tokens=max_tokens,
             temperature=temperature,
-            top_p=top_p,
-            echo=echo
+            top_p=top_p
         )        
         return output['choices'][0]['message']['content']
 
@@ -85,77 +83,3 @@ print("Generating response...")
 response = model.run(user_prompt, system_prompt)
 print("\nResponse:")
 print(response)
-
-# class MistralOpenOrca:
-#     def __init__(self,
-#         gguf_path: str = "models\mistral-7b-openorca.Q4_K_M.gguf", # ,
-#         model_id: str = "TheBloke/Mistral-7B-OpenOrca-GGUF",
-#         device: str = "cpu"
-#     ):
-#         """
-#         Load a GGUF-quantized Mistral-7B-OpenOrca model for inference.
-        
-#         Args:
-#             gguf_path: Path to the .gguf file.
-#             model_id: Hub repo containing the model metadata/tokenizer.
-#             device: Device string, e.g. "cpu" or "cuda:0".
-#             torch_dtype: Data type to load weights as (float32/16/bfloat16).
-#         """
-#         # Load tokenizer and model with gguf_file param
-#         self.device = device
-#         self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=gguf_path)
-#             # model_id,
-#         #     gguf_file=gguf_path,
-#         #     local_files_only=False
-#         # )
-#         self.model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path=gguf_path).to(device)
-#         #self.device = torch.device(device)
-#         #self.model.to(self.device)
-#         #self.model.eval()
-
-#     def run(self, prompt: str, system_prompt: str = "") -> str:
-#         """
-#         Generate a response given a user prompt and optional system prompt.
-        
-#         Args:
-#             prompt: The user’s input.
-#             system_prompt: An optional system instruction.        
-#         Returns:
-#             The generated text.
-#         """
-#         # Construct chat-style formatting
-#         full_prompt = (
-#             "<|im_start|>system\n"
-#             f"{system_prompt}"
-#             "<|im_end|>\n"
-#             "<|im_start|>user\n"
-#             f"{prompt}"
-#             "<|im_end|>\n"
-#             "<|im_start|>assistant\n"
-#         )
-#         inputs = self.tokenizer(
-#             full_prompt,
-#             return_tensors="pt"
-#         ).to(self.device)
-
-#         # Generate tokens
-#         outputs = self.model.generate(
-#             **inputs,
-#             max_new_tokens=512,
-#             do_sample=True,
-#             temperature=0.7,
-#             top_p=0.9
-#         )
-#         # Decode and return
-#         return self.tokenizer.batch_decode(
-#             outputs
-#         )[0]
-
-# from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-# # tokenizer = AutoTokenizer.from_pretrained("C:\\Users\\ArPaVa\\Documents\\VS Code\\Tesis\\Code\\Tesis\\models\\mistral-7b-openorca.Q4_K_M.gguf")
-# model = AutoModelForSequenceClassification.from_pretrained(r"C:/Users/ArPaVa/Documents/VS Code/Tesis/Code/Tesis/models/mistral-7b-openorca.Q4_K_M.gguf")
-
-# input_text = "Your input text goes here"
-# encoded_input = tokenizer(input_text, return_tensors='pt')
-# output = model(**encoded_input)

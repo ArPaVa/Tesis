@@ -25,8 +25,8 @@ def cut_audio(input_file, output_file, start_time, end_time):
     print(f"Audio successfully saved to {output_file}")
 
 # Example usage
-input_audio = "longtesttocut.mp3"  # Replace with your input file path
-output_audio = "mtest.wav"  # Replace with your desired output file path
+input_audio = "longtesttocut.mp3"      # Replace with your input file path
+output_audio = "mtest.wav"             # Replace with your desired output file path
 
 # Cut the first 5 minutes (0 seconds to 300 seconds)
 cut_audio(input_audio, output_audio, start_time=0, end_time=300)

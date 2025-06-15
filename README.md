@@ -1,77 +1,107 @@
-# Tesis
+# README
 
-## Setup
+## Requirements
 
-Add the variable: HF_ACCESS_TOKEN to a .env file
+**Operating System**
 
-Prepare for the download of the whisper model. (medium=1.42 GB small=461MB)
-Prepare for the download of the pyannote model. (30MB)
+- Linux is recommended for best compatibility and performance.
+
+**Python**
+
+- Python version 3.10 or higher is required.
+
+**External Dependencies**
+
+- **FFmpeg**: Required for audio processing.
+  - **Installation on Linux:**
+    ```bash
+    sudo apt install ffmpeg
+    ```
+
+- **C Compiler**: Required for llama-cpp-python.
+  - **Linux:** It should come installed, if not: Install `gcc` or `clang`.
+    ```bash
+    sudo apt install build-essential
+    ```
 
 ## Installation
 
-```
-sudo apt install ffmpeg
-```
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/ArPaVa/Tesis.git
+   cd Tesis
+   ```
 
-```bash
-python3 -m venv venv
-source venv/bin/activate
+2. **Create and Activate Virtual Environment**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-pip install -r requirements.txt
-```
+3. **Install Python Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### llama-cpp requirements https://pypi.org/project/llama-cpp-python/
-Install a C compiler:  https://winlibs.com/#download-release
-- Linux: gcc or clang
-- Windows: Visual Studio or MinGW
-- MacOS: Xcode
-<!-- 
+4. **Install llama-cpp-python**
+   ```bash
+   pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python
+   ```
 
-Add `gcc` to PATH. 
- TODO
+5. **Set Environment Variables**
+   - Add your Hugging Face access token to a `.env` file in the project root:
+     ```
+     HF_ACCESS_TOKEN=your_huggingface_token
+     ```
+    For this yu must have an account in [Hugging Face](https://huggingface.co)
 
-Set environment variables to specify the compiler and generator.
+## Model Downloads and Setup
 
-    In **Command Prompt** (cmd.exe), run:
-    ```cmd
-    set CC=C:\mingw64\bin\gcc.exe
-    set CXX=C:\mingw64\bin\g++.exe
-    set CMAKE_GENERATOR=MinGW Makefiles
+**Whisper Model**
 
-    set CMAKE_MAKE_PROGRAM=C:\mingw64\bin\mingw32-make.exe
-    ```
+- The application supports several Whisper models:
+  - `medium` (1.42 GB)
+  - `small` (461 MB)
+  - `base` (138 MB)
+  - `tiny` (73 MB)
+- The model will be downloaded automatically as needed. Ensure you have sufficient disk space and internet connection.
 
-    In **PowerShell**, run:
-    ```powershell
-    $env:CC = "C:\mingw64\bin\gcc.exe"
-    $env:CXX = "C:\mingw64\bin\g++.exe"
-    $env:CMAKE_GENERATOR = "MinGW Makefiles"
-    $env:CMAKE_MAKE_PROGRAM = "C:\mingw64\bin\mingw32-make.exe"
-    $env:CMAKE_ARGS = "-DGGML_OPENBLAS=on -DCMAKE_C_COMPILER=C:\mingw64\bin\gcc.exe -DCMAKE_CXX_COMPILER=C:\mingw64\bin\g++.exe"
-    ``` -->
+**LLM Model [Mistral-7B-OpenOrca](https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca)**
 
-```bash
-pip install --upgrade --force-reinstall --no-cache-dir llama-cpp-python
-```
+- Download the GGUF file `mistral-7b-openorca.Q4_K_M.gguf` from [TheBloke/Mistral-7B-OpenOrca-GGUF](https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF?show_file_info=mistral-7b-openorca.Q4_K_M.gguf). Or download directly from this link (https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/resolve/main/mistral-7b-openorca.Q4_K_M.gguf?download=true).
+- Place the downloaded `.gguf` file into the `/models` directory in the project root.
+- The model file size is approximately 4.10 GB.
+- Max RAM required: 6.87 GB.
 
-## Execution
+## Running the Application
 
-To execute just execute main, it will ask for the path of the file you want to work with, the path needs to have the full path including the format (example.mp3), or just the name of the file (including format), if the file is on the same folder as main.
+- Start the web application with Streamlit:
+  ```bash
+  streamlit run src/app.py
+  ```
 
-```bash
-python3 main.py
-```
+## Audacity
 
-## LLM used:
+**What is Audacity?**
 
-https://huggingface.co/Open-Orca/Mistral-7B-OpenOrca
+Audacity is a free, open-source audio editor and recorder. It is widely used for recording, editing, and processing audio files.
 
-```bash
-python3 llm.py
-```
+**Important:**  
+Audacity must be running to use this module. If you have multiple Audacity windows open, the code will operate on the last Audacity window opened. You cannot select which window the macros are sent to.
 
-## 
-Read in a paper that for lower end pcs, cuting the audios in 5 minutes pieces helps to reduce memory usage and speeds up processing. Wich is something we really need
+### Enable mod-script-pipe
 
-## Whisper
-medium 1.42 GB download
+The `mod-script-pipe` module is not enabled by default in Audacity and must be enabled to allow external scripting.
+
+**To enable mod-script-pipe:**
+
+1. **Run Audacity.**
+2. Go to **Edit > Preferences > Modules**.
+3. Locate `mod-script-pipe` (it should show as "New") and change its status to **Enabled**.
+4. **Restart Audacity**.
+5. Return to **Edit > Preferences > Modules** and check that `mod-script-pipe` now shows as **Enabled**.
+
+This confirms that Audacity is finding the mod-script-pipe module and that the version is compatible.
+
+**Note:**  
+Audacity must remain open while using this project to enable automatic project generation and scripting integration.

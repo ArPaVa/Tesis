@@ -2,8 +2,11 @@ import os
 from pydub import AudioSegment
 import pandas as pd
 import json
-from pydub import AudioSegment
+from settings import *
 
+def get_audio_duration(audio_path):
+    full_audio = AudioSegment.from_file(audio_path)
+    return len(full_audio)
 
 def process_audio_segments(rttm_dict, audio_path, model, language, output_file="transcriptions.txt"):
     # Load entire audio file
@@ -35,25 +38,14 @@ def process_audio_segments(rttm_dict, audio_path, model, language, output_file="
             os.remove(temp_path)
     return output_file
 
-def pyannotefix(audio_path):
-    # waveform, sample_rate = torchaudio.load(audio_path)
+def adjust_audio(audio_path, destination_file):
     
+    # Resample to 16kHz if necessary and Downmix to mono if necessary
     audio:AudioSegment = AudioSegment.from_file(audio_path)
     audio = audio.set_frame_rate(16000).set_channels(1)
     
-    # # Resample to 16kHz if necessary
-    # if sample_rate != 16000:
-    #     resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=16000)
-    #     waveform = resampler(waveform)
-        
-    # # Downmix to mono if necessary
-    # if waveform.shape[0] > 1:
-    #     waveform = waveform.mean(dim=0, keepdim=True)
-
     # Save the converted audio
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"in_process",f"ptnready_{os.path.splitext(os.path.basename(audio_path))[0]}.wav")
-    audio.export(path, format="wav")
-    # torchaudio.save(path, waveform, 16000)
+    audio.export(destination_file, format="wav")
     
 def rttm_join_speakers (file_path):
     rttm_file = file_path
@@ -61,9 +53,6 @@ def rttm_join_speakers (file_path):
         "type", "file_id", "channel", "start_time", "duration", 
         "orthography", "speaker_type", "speaker_id", "extra1", "extra2"
     ])
-
-    # Drop unused columns (last two <NA> columns)
-    #df = df.drop(columns=["extra1", "extra2"])
 
     # Group consecutive segments by speaker ID
     merged_segments = []
@@ -111,7 +100,7 @@ def rttm_join_speakers (file_path):
     merged_df = pd.DataFrame(merged_segments)
 
     # Save back to RTTM format
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"in_process",f"merged_{os.path.splitext(os.path.basename(file_path))[0]}.rttm")
+    path = os.path.join(IN_PROCESS_DIR,f"merged_{os.path.splitext(os.path.basename(file_path))[0]}.rttm")
 
     merged_df.to_csv(path, sep=" ", header=False, index=False, 
                     columns=["type", "file_id", "channel", "start_time", "duration", 
